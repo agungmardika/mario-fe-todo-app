@@ -249,15 +249,14 @@
                             if (taskCount > 0) {
                                 totalTaskProgress = todo.tasks.reduce((sum, task) => sum + task.progress, 0);
                             }
-                            let totalProgress = taskCount > 0 ? Math.round(totalTaskProgress / taskCount) : todo.progress;
-
+                            let totalProgress = taskCount > 0 ? totalTaskProgress : todo.progress;
 
                             let todoCard = `
                             <div class=" bg-white shadow-lg rounded-xl p-5 border border-gray-300 transition-all transform hover:scale-[1.02] hover:shadow-xl duration-300">
                                 <div class="flex justify-between items-center">
                                     <h3 class="text-xl font-semibold text-gray-800">${todo.name}</h3>
-                                    <span class="text-sm px-3 py-1 rounded-full ${todo.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                                        ${todo.status}
+                                    <span class="text-sm px-3 py-1 rounded-full ${totalProgress === 100 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                        ${totalProgress === 100 ? 'Selesai' : todo.status}
                                     </span>
                                 </div>
             
@@ -531,27 +530,56 @@
                     todo_id: $('#taskTodoId').val(),
                 };
 
+                // Langkah 1: Ambil data task yang sudah ada untuk todo_id tersebut
                 $.ajax({
-                    url: `${API_URL}/tasks/${taskData.todo_id}`, // Menyertakan todo_id dalam URL
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(taskData),
-                    success: function () {
-                        alert('Task berhasil ditambahkan!');
-                        $('#taskModal').addClass('hidden');
+                    url: `${API_URL}/todos/${taskData.todo_id}`, // Mengambil data todo beserta tasknya
+                    type: 'GET',
+                    success: function (todo) {
+                        let totalProgress = 0;
 
-                        // Update total progress setelah task baru ditambahkan
-                        updateTodoProgress(taskData.todo_id);
+                        // Langkah 2: Hitung total progress dari task yang sudah ada
+                        if (todo.tasks && todo.tasks.length > 0) {
+                            totalProgress = todo.tasks.reduce((sum, task) => sum + task.progress, 0);
+                        }
 
-                        // Auto refresh daftar todos setelah task ditambahkan
-                        getTodos(); // Pastikan fungsi getTodos sudah ada untuk mengambil dan menampilkan todos
+                        // Langkah 3: Tambahkan progress task baru ke total progress
+                        totalProgress += taskData.progress;
+
+                        // Langkah 4: Validasi jika total progress melebihi 100%
+                        if (totalProgress > 100) {
+                            alert('Total progress tidak bisa melebihi 100%!');
+                            return; // Hentikan proses jika melebihi 100%
+                        }
+
+                        // Langkah 5: Kirim data task baru jika validasi berhasil
+                        $.ajax({
+                            url: `${API_URL}/tasks/${taskData.todo_id}`, // Menyertakan todo_id dalam URL
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(taskData),
+                            success: function () {
+                                alert('Task berhasil ditambahkan!');
+                                $('#taskModal').addClass('hidden');
+
+                                // Update total progress setelah task baru ditambahkan
+                                updateTodoProgress(taskData.todo_id);
+
+                                // Auto refresh daftar todos setelah task ditambahkan
+                                getTodos(); // Pastikan fungsi getTodos sudah ada untuk mengambil dan menampilkan todos
+                            },
+                            error: function (xhr) {
+                                alert('Gagal menambahkan task.');
+                                console.error(xhr);
+                            }
+                        });
                     },
                     error: function (xhr) {
-                        alert('Gagal menambahkan task.');
+                        alert('Gagal mengambil data todo.');
                         console.error(xhr);
                     }
                 });
             });
+
 
 
             function updateTodoProgress(todoId) {
