@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         if (!localStorage.getItem('token')) {
             window.location.href = 'login.html'; // Redirect jika belum login
         }
     </script>
+    <script src="../assets/js/auth.js"></script>
 </head>
 
 <body>
@@ -37,18 +40,6 @@
             </div>
 
             <div class="my-4 bg-gray-600 h-[1px]"></div>
-
-            <div class="text-left text-sm mt-2 w-4/5 mx-auto text-gray-200 font-bold" id="submenu">
-                <h1 class="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-1">
-                    Social
-                </h1>
-                <h1 class="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-1">
-                    Personal
-                </h1>
-                <h1 class="cursor-pointer p-2 hover:bg-blue-600 rounded-md mt-1">
-                    Friends
-                </h1>
-            </div>
             <div
                 class="bg-red-500 p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600 text-white">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -56,21 +47,11 @@
             </div>
         </div>
 
-        <script type="text/javascript">
-            function dropdown() {
-                document.querySelector("#submenu").classList.toggle("hidden");
-                document.querySelector("#arrow").classList.toggle("rotate-0");
-            }
-            dropdown();
 
-            function openSidebar() {
-                document.querySelector(".sidebar").classList.toggle("hidden");
-            }
-        </script>
     </div>
 
-    <div class="bg-white  flex flex-col items-center p-4 ml-56">
-        <div class="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 mt-6">
+    <div class="bg-white  flex flex-col items-center p-4 ml-48">
+        <div class="w-full max-w-5xl bg-white shadow-md rounded-lg p-6 mt-6">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold text-black">My Todo</h1>
                 <button id="addTodoBtn"
@@ -78,113 +59,161 @@
                     <i class="fas fa-plus"></i> Tambah Todo
                 </button>
             </div>
-            <!-- Modal Form untuk tambah task -->
-            <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
-                <div class="bg-white p-6 rounded-xl shadow-lg w-80 relative">
-                    <button id="closeTaskModal"
-                        class="absolute top-2 right-2 text-gray-500 hover:text-red-500">&times;</button>
-                    <h2 class="text-xl font-bold mb-4 text-center">Tambah Task</h2>
+            <!-- modal tambah / edit todo -->
+            <div id="todoModal"
+                class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h2 class="text-xl font-semibold">Todo</h2>
+                        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
 
-                    <form id="taskForm">
-                        <input type="hidden" id="taskTodoId">
-                        <div class="mb-3">
-                            <label for="taskTitle" class="block text-sm font-medium text-gray-700">Judul Task</label>
-                            <input type="text" id="taskTitle"
-                                class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                required>
+                    <form id="todoForm" class="mt-4 space-y-4">
+                        <input type="hidden" id="todoId">
+
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Todo</label>
+                            <input type="text" id="name" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-green-300">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="taskProgress" class="block text-sm font-medium text-gray-700">Progress
-                                (%)</label>
-                            <input type="number" id="taskProgress" class="w-full border rounded-md p-2" min="0"
-                                max="100" required>
+                        <div>
+                            <input type="number" id="progress" min="0" max="100" value="0" hidden>
+
                         </div>
 
-                        <button type="submit"
-                            class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300">Simpan
-                            Task</button>
-                    </form>
-                </div>
-            </div>
-
-
-            <!-- Modal Form untuk tambah task -->
-            <div id="taskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
-                <div class="bg-white p-6 rounded-xl shadow-lg w-80 relative">
-                    <button id="closeTaskModal"
-                        class="absolute top-2 right-2 text-gray-500 hover:text-red-500">&times;</button>
-                    <h2 class="text-xl font-bold mb-4 text-center">Tambah Task</h2>
-
-                    <form id="taskForm">
-                        <input type="hidden" id="taskTodoId">
-                        <div class="mb-3">
-                            <label for="taskTitle" class="block text-sm font-medium text-gray-700">Judul Task</label>
-                            <input type="text" id="taskTitle"
-                                class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="taskProgress" class="block text-sm font-medium text-gray-700">Progress
-                                (%)</label>
-                            <input type="number" id="taskProgress" class="w-full border rounded-md p-2" min="0"
-                                max="100" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="taskStatus" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select id="taskStatus" class="w-full border rounded-md p-2">
+                        <div>
+                            <select hidden disabled id="status" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-green-300">
                                 <option value="in progress">In Progress</option>
                                 <option value="done">Done</option>
                             </select>
                         </div>
 
-                        <button type="submit"
-                            class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300">Simpan
-                            Task</button>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="closeModal"
+                                class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition">Batal</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Modal Tambah Task -->
+            <div id="taskModal"
+                class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h2 class="text-xl font-semibold">Tambah Task</h2>
+                        <button id="closeTaskModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <form id="taskForm" class="mt-4 space-y-4">
+                        <input type="hidden" id="taskTodoId">
+
+                        <div>
+                            <label for="taskTitle" class="block text-sm font-medium text-gray-700">Judul
+                                Task</label>
+                            <input type="text" id="taskTitle" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-blue-300">
+                        </div>
+
+                        <div>
+                            <label for="taskProgress" class="block text-sm font-medium text-gray-700">Progress
+                                (%)</label>
+                            <input type="number" id="taskProgress" min="0" max="100" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-blue-300">
+                        </div>
+
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="closeTaskModal"
+                                class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition">Batal</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>
 
+            <!-- Modal Edit Task -->
+            <div id="EditTaskModal"
+                class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h2 class="text-xl font-semibold">Edit Task</h2>
+                        <button id="closeEditTaskModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
 
-            <!-- <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2" id="formTitle">Tambah Todo Baru</h2>
-                <form id="todoForm" class="space-y-4">
-                    <input type="hidden" id="todoId">
-                    <div>
-                        <label for="name" class="block text-sm font-medium">Nama Todo:</label>
-                        <input type="text" id="name" name="name" required
-                            class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
-                    </div>
-                    <div>
-                        <label for="progress" class="block text-sm font-medium">Progress (%):</label>
-                        <input type="number" id="progress" name="progress" min="0" max="100" required
-                            class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
-                    </div>
-                    <div>
-                        <label for="status" class="block text-sm font-medium">Status:</label>
-                        <select id="status" name="status" required
-                            class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
-                            <option value="in progress">In Progress</option>
-                            <option value="done">Done</option>
-                        </select>
-                    </div>
-                    <button type="submit" id="submitBtn"
-                        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Tambah Todo</button>
-                    <button type="button" id="cancelEdit"
-                        class="hidden bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Batal Edit</button>
-                </form>
-            </div> -->
+                    <form id="editTaskForm" class="mt-4 space-y-4">
+                        <input type="hidden" id="editTaskId">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4" id="todoList"></div>
+                        <div>
+                            <label for="editTaskTitle" class="block text-sm font-medium text-gray-700">Judul
+                                Task</label>
+                            <input type="text" id="editTaskTitle" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-blue-300">
+                        </div>
+
+                        <div>
+                            <label for="editTaskProgress" class="block text-sm font-medium text-gray-700">Progress
+                                (%)</label>
+                            <input type="number" id="editTaskProgress" min="0" max="100" required
+                                class="w-full p-2 border rounded-md focus:ring focus:ring-blue-300">
+                        </div>
+
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="closeEditTaskModal"
+                                class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition">Batal</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Edit Todo -->
+            <div id="todoModal"
+                class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex items-center justify-center">
+                <div class="bg-white p-8 rounded-lg w-1/3">
+                    <h2 id="formTitle" class="text-2xl font-semibold mb-4">Edit Todo </h2>
+                    <form id="todoForm">
+                        <input type="hidden" id="todoId" name="todoId">
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Edit Todo
+                            </label>
+                            <input type="text" id="name" name="name"
+                                class="w-full p-2 border border-gray-300 rounded-md" required>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <button type="button" id="cancelEdit"
+                                class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition hidden">Batal
+                                Edit</button>
+                        </div>
+                    </form>
+                    <!-- Close Modal Button -->
+                    <button id="closeModal"
+                        class="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-md">X</button>
+                </div>
+            </div>
+
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4" id="todoList"></div>
 
         </div>
 
         <script>
-            const API_URL = 'http://192.168.1.6:8000/api/todos';
+            const API_URL = 'http://192.168.118.159:8000/api';
             const TOKEN = localStorage.getItem('token');
-
+            if (!TOKEN) {
+                console.error('Token tidak ditemukan, silakan login ulang.');
+            }
             // Set Authorization Header
             $.ajaxSetup({
                 headers: { 'Authorization': `Bearer ${TOKEN}` }
@@ -193,54 +222,123 @@
             // Fetch Todos
             function getTodos() {
                 $.ajax({
-                    url: API_URL,
+                    url: `${API_URL}/todos`,
                     type: 'GET',
-                    success: function (todos) {
-                        $('#todoList').empty();
-                        todos.forEach((todo, index) => {
-                            let todoCard = `
-                <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200">
-                    <h3 class="text-xl font-semibold text-gray-800">${todo.name}</h3>
-                    <p class="text-gray-600 mt-2">Progress: <strong>${todo.progress}%</strong></p>
-                    <p class="text-sm text-gray-500">Status: ${todo.status}</p>
-                    <div class="mt-4 flex space-x-2">
-                        <button onclick="editTodo(${todo.id})" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Edit</button>
-                        <button onclick="deleteTodo(${todo.id})" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Hapus</button>
-                        <button onclick="showAddTaskModal(${todo.id})" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Tambah Task</button>
-                    </div>
-                `;
+                    success: function (response) {
+                        console.log("API Response:", response); // Debug response API
 
-                            // Loop through tasks related to this todo
+                        if (!response || typeof response !== 'object') {
+                            console.error("Data todos tidak valid:", response);
+                            $('#todoList').html('<p class="text-red-500">Data tidak valid.</p>');
+                            return;
+                        }
+
+                        const todos = Array.isArray(response) ? response : response.data;
+
+                        if (!Array.isArray(todos)) {
+                            console.error("Data todos bukan array:", todos);
+                            return;
+                        }
+
+                        $('#todoList').empty();
+
+                        todos.forEach((todo) => {
+                            let totalTaskProgress = 0;
+                            let taskCount = todo.tasks ? todo.tasks.length : 0;
+
+                            if (taskCount > 0) {
+                                totalTaskProgress = todo.tasks.reduce((sum, task) => sum + task.progress, 0);
+                            }
+                            let totalProgress = taskCount > 0 ? Math.round(totalTaskProgress / taskCount) : todo.progress;
+
+
+                            let todoCard = `
+                            <div class=" bg-white shadow-lg rounded-xl p-5 border border-gray-300 transition-all transform hover:scale-[1.02] hover:shadow-xl duration-300">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-semibold text-gray-800">${todo.name}</h3>
+                                    <span class="text-sm px-3 py-1 rounded-full ${todo.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                        ${todo.status}
+                                    </span>
+                                </div>
+            
+                                <div class="mt-3">
+                                    <div class="relative w-full bg-gray-200 rounded-full h-2">
+                                        <div class="absolute top-0 left-0 h-2 rounded-full transition-all duration-500" style="width: ${totalProgress}%; background: ${totalProgress === 100 ? '#10B981' : '#FBBF24'};"></div>
+                                    </div>
+                                    <p id="progress-${todo.id}" class="text-sm text-gray-600 mt-1">${totalProgress}% Selesai</p>
+                                </div>
+                                <div class="mt-4 flex gap-2 justify-center">
+                                    <button onclick="editTodo(${todo.id})" 
+                                        class="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 transition">
+                                        <i class="fas fa-edit text-white"></i>
+                                    </button>
+                                    
+                                    <button onclick="deleteTodo(${todo.id})" 
+                                        class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition">
+                                        <i class="fas fa-trash text-white"></i>
+                                    </button>
+                                    
+                                    <button onclick="showAddTaskModal(${todo.id})" 
+                                        class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">
+                                        <i class="fas fa-plus text-white"></i>
+                                    </button>
+                                </div>`;
+
+                            // Loop tasks
                             if (todo.tasks && todo.tasks.length > 0) {
-                                todoCard += '<div class="mt-4 space-y-2">';
+                                todoCard += '<div class="mt-4 border-t pt-3 space-y-2">';
                                 todo.tasks.forEach((task) => {
                                     todoCard += `
-                        <div class="p-2 border rounded-md bg-gray-50">
-                            <p class="font-semibold">${task.title}</p>
-                            <p class="text-sm text-gray-500">Progress: ${task.progress}%</p>
-                        </div>
-                    `;
+                                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-md border">
+                                        <p class="font-medium">${task.title}</p>
+                                        <span class="text-sm px-2 py-1 rounded-full ${task.progress === 100 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">
+                                            ${task.progress}%
+                                        </span>
+                                        <div class="relative">
+                                            <!-- Tombol Edit -->
+                                            <button class="text-blue-500 hover:text-blue-700 focus:outline-none edit-task" data-id="${task.id}" data-title="${task.title}" data-progress="${task.progress}">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+
+                                            <!-- Tombol Hapus -->
+                                            <button class="text-red-500 hover:text-red-700 focus:outline-none delete-task ml-2" data-id="${task.id}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>`;
                                 });
                                 todoCard += '</div>';
                             } else {
-                                todoCard += '<p class="mt-2 text-gray-500">Tidak ada tasks untuk todo ini.</p>';
+                                todoCard += '<p class="mt-3 text-gray-500 italic">Belum ada task.</p>';
                             }
+                            todoCard += `</div>`; // Close todo card
 
-                            // Close todo card
-                            todoCard += `</div>`;
-
-                            // Add the todo card to the todo list
+                            // Tambahkan ke daftar todo
                             $('#todoList').append(todoCard);
                         });
                     },
                     error: function (xhr) {
+                        console.error("Error fetching todos:", xhr);
                         if (xhr.status === 401) {
                             window.location.href = 'login.html';
+                        } else {
+                            $('#todoList').html('<p class="text-red-500">Gagal memuat data.</p>');
                         }
                     }
                 });
             }
 
+            function refreshTodos() {
+                $.ajax({
+                    url: "URL_API_GET_TODOS", // Ganti dengan endpoint API untuk mengambil semua todos
+                    method: "GET",
+                    success: function (response) {
+                        $('#todoList').html(''); // Kosongkan daftar todo sebelum render ulang
+                        renderTodos(response.todos); // Render ulang dengan data terbaru
+                    }
+                });
+            }
 
 
             $(document).ready(function () {
@@ -268,63 +366,68 @@
                     $('#todoForm')[0].reset();
                     $('#todoId').val('');
                 }
+            });
 
-                // Submit Form
-                $('#todoForm').submit(function (e) {
-                    e.preventDefault();
-                    const todoId = $('#todoId').val();
-                    const todoData = {
-                        name: $('#name').val(),
-                        progress: parseInt($('#progress').val()),
-                        status: $('#status').val(),
-                    };
+            // Menangani pengiriman form untuk menambahkan todo
+            $('#todoForm').submit(function (e) {
+                e.preventDefault();
 
-                    if (todoId) {
-                        // Update Todo
-                        $.ajax({
-                            url: `${API_URL}/${todoId}`,
-                            type: 'PUT',
-                            contentType: 'application/json',
-                            data: JSON.stringify(todoData),
-                            success: function () {
-                                alert('Todo berhasil diperbarui!');
-                                resetForm();
-                                $('#todoModal').addClass('hidden');
-                                getTodos();
-                            },
-                            error: function (xhr) {
-                                console.log(xhr.responseText);
-                                alert('Gagal memperbarui todo.');
-                            }
-                        });
-                    } else {
-                        // Tambah Todo Baru
-                        $.ajax({
-                            url: API_URL,
-                            type: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(todoData),
-                            success: function () {
-                                alert('Todo berhasil ditambahkan!');
-                                resetForm();
-                                $('#todoModal').addClass('hidden');
-                                getTodos();
-                            },
-                            error: function (xhr) {
-                                console.log(xhr.responseText);
-                                alert('Gagal menambahkan todo.');
-                            }
-                        });
+                // Mengambil data dari form
+                const todoId = $('#todoId').val(); // ID Todo (jika ada, untuk update)
+                const todoName = $('#name').val();
+                const todoProgress = $('#progress').val();
+                const todoStatus = $('#status').val();
+
+                // Menyiapkan data yang akan dikirim ke API
+                const todoData = {
+                    name: todoName,
+                    progress: parseInt(todoProgress) || 0, // Pastikan progress berupa angka
+                    status: todoStatus
+                };
+
+                // Gunakan API_URL tanpa deklarasi ulang
+                let apiUrl = `${API_URL}/todos`; // Default URL untuk menambah todo
+                let method = 'POST'; // Default method adalah POST (untuk menambah)
+
+                if (todoId) {
+                    apiUrl = `${API_URL}/todos/${todoId}`; // Jika ada todoId, gunakan PUT (untuk update)
+                    method = 'PUT';
+                }
+
+                const token = localStorage.getItem('token');
+
+                $.ajax({
+                    url: apiUrl, // Gunakan API_URL dari deklarasi awal
+                    type: method,
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Menambahkan token di header
+                    },
+                    data: JSON.stringify(todoData),
+                    success: function (response) {
+                        alert('Todo berhasil disimpan!');
+                        $('#todoModal').addClass('hidden'); // Menutup modal setelah berhasil
+                        resetForm(); // Reset form
+
+                        // Auto refresh daftar todos setelah todo berhasil disimpan
+                        getTodos(); // Pastikan fungsi getTodos sudah ada untuk mengambil dan menampilkan todos
+                    },
+                    error: function (xhr) {
+                        console.error(xhr);
+                        alert('Gagal menyimpan todo: ' + xhr.responseText);
                     }
                 });
             });
-
+            // Menangani penutupan modal
+            $('#closeModal').click(function () {
+                $('#todoModal').addClass('hidden');
+            });
 
             // Hapus Todo
             function deleteTodo(id) {
                 if (confirm('Apakah yakin ingin menghapus todo ini?')) {
                     $.ajax({
-                        url: `${API_URL}/${id}`,
+                        url: `${API_URL}/todos/${id}`,
                         type: 'DELETE',
                         success: function () {
                             alert('Todo berhasil dihapus!');
@@ -337,23 +440,32 @@
             // Edit Todo
             function editTodo(id) {
                 $.ajax({
-                    url: `${API_URL}/${id}`,
+                    url: `${API_URL}/todos/${id}`, // Menggunakan API_URL yang sudah dideklarasikan di awal
                     type: 'GET',
                     success: function (todo) {
                         $('#formTitle').text('Edit Todo');
                         $('#submitBtn').text('Perbarui Todo');
                         $('#cancelEdit').removeClass('hidden');
 
-                        $('#todoId').val(todo.id);
-                        $('#name').val(todo.name);
-                        $('#progress').val(todo.progress);
-                        $('#status').val(todo.status);
+                        $('#todoId').val(todo.id); // Isi ID Todo
+                        $('#name').val(todo.name); // Isi nama Todo
+                        $('#progress').val(todo.progress); // Isi progress
+                        $('#status').val(todo.status); // Isi status
+
+                        // Tampilkan modal untuk edit
+                        $('#todoModal').removeClass('hidden').addClass('flex');
                     },
                     error: function () {
                         alert('Gagal mengambil data todo.');
                     }
                 });
             }
+
+            // Untuk menutup modal ketika tombol close ditekan
+            $('#closeModal').click(function () {
+                $('#EditTodoModal').addClass('hidden').removeClass('flex');
+            });
+
 
             // Reset Form
             function resetForm() {
@@ -384,57 +496,12 @@
                 $('#taskModal').addClass('hidden');
             });
 
-            // Menangani pengiriman form
-            $('#taskForm').on('submit', function (e) {
-                e.preventDefault();
-
-                // Mengambil data dari form
-                const todoId = $('#taskTodoId').val();
-                const taskTitle = $('#taskTitle').val();
-                const taskProgress = $('#taskProgress').val();
-                const taskStatus = $('#taskStatus').val();
-
-                // Mendapatkan user_id, misalnya dari sesi atau token yang disimpan
-                const userId = getUserId(); // Fungsi untuk mendapatkan ID pengguna yang sedang login
-
-                // Data yang akan dikirim ke API
-                const taskData = {
-                    title: taskTitle,
-                    progress: taskProgress,
-                    parent_id: null,
-                    todo_id: todoId,
-                    user_id: userId,
-                    status: taskStatus
-                };
-
-                // Mengirimkan data ke API menggunakan AJAX
-                $.ajax({
-                    url: `http://192.168.1.6:8000/api/tasks/${todoId}`,
-                    type: 'POST',
-                    data: taskData,
-                    success: function (response) {
-                        // Menutup modal setelah task ditambahkan
-                        $('#taskModal').addClass('hidden');
-
-                        // Menampilkan notifikasi atau pembaruan UI setelah task berhasil ditambahkan
-                        alert('Task berhasil ditambahkan!');
-                    },
-                    error: function (xhr, status, error) {
-                        // Menampilkan pesan error jika terjadi kesalahan
-                        alert('Gagal menambahkan task: ' + error);
-                    }
-                });
-            });
 
             // Fungsi untuk mendapatkan user_id, bisa disesuaikan dengan cara kamu mendapatkan ID pengguna yang sedang login
             function getUserId() {
                 // Misalnya, user_id disimpan di localStorage atau sessionStorage
                 return localStorage.getItem('user_id'); // Gantilah sesuai dengan implementasi login kamu
             }
-
-
-
-
             // Tutup Modal
             $('#closeTaskModal').click(function () {
                 $('#taskModal').addClass('hidden');
@@ -454,50 +521,71 @@
                 $('#taskForm')[0].reset();
                 $('#taskTodoId').val('');
             }
-
-            // Submit Form untuk tambah task
+            // Submit tambah task
             $('#taskForm').submit(function (e) {
                 e.preventDefault();
 
                 const taskData = {
                     title: $('#taskTitle').val(),
-                    progress: parseInt($('#taskProgress').val()),
+                    progress: parseInt($('#taskProgress').val()), // Ambil progress task
+                    todo_id: $('#taskTodoId').val(),
                 };
 
-                const todoId = $('#taskTodoId').val();  // Ambil ID todo yang telah disimpan
-
-                // Kirim data task baru ke API
                 $.ajax({
-                    url: `${API_URL}/${todoId}/tasks`,  // Pastikan API URL sesuai dengan yang diterima backend
+                    url: `${API_URL}/tasks/${taskData.todo_id}`, // Menyertakan todo_id dalam URL
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(taskData),
-                    success: function (response) {
+                    success: function () {
                         alert('Task berhasil ditambahkan!');
                         $('#taskModal').addClass('hidden');
-                        getTodos(); // Refresh Todo list untuk menampilkan task yang baru ditambahkan
-                    },
-                    error: function (xhr, status, error) {
-                        // Menampilkan error yang lebih jelas
-                        let errorMessage = 'Gagal menambahkan task.';
-                        if (xhr.status === 400) {
-                            errorMessage = 'Data yang dikirim tidak valid. Silakan periksa inputan Anda.';
-                        } else if (xhr.status === 401) {
-                            errorMessage = 'Anda tidak terautentikasi. Silakan login terlebih dahulu.';
-                        } else if (xhr.status === 500) {
-                            errorMessage = 'Terjadi masalah di server. Silakan coba lagi nanti.';
-                        } else if (error) {
-                            errorMessage = `Error: ${error}`;
-                        }
 
-                        console.error(`Status: ${xhr.status}, Error: ${errorMessage}`);
-                        alert(errorMessage);
+                        // Update total progress setelah task baru ditambahkan
+                        updateTodoProgress(taskData.todo_id);
+
+                        // Auto refresh daftar todos setelah task ditambahkan
+                        getTodos(); // Pastikan fungsi getTodos sudah ada untuk mengambil dan menampilkan todos
+                    },
+                    error: function (xhr) {
+                        alert('Gagal menambahkan task.');
+                        console.error(xhr);
                     }
                 });
             });
 
 
+            function updateTodoProgress(todoId) {
+                $.ajax({
+                    url: `${API_URL}/tasks/${todoId}`,
+                    type: 'GET',
+                    success: function (tasks) {
+                        let totalTasks = tasks.length;
+                        if (totalTasks === 0) return;
 
+                        // Hitung total akumulasi progress semua task
+                        let totalProgress = tasks.reduce((sum, task) => sum + task.progress, 0);
+                        let avgProgress = Math.round(totalProgress / totalTasks); // Rata-rata progress
+
+                        // Update progress pada todo di database
+                        $.ajax({
+                            url: `${API_URL}/${todoId}`,
+                            type: 'PUT',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ progress: avgProgress }),
+                            success: function () {
+                                // Perbarui UI setelah update ke database berhasil
+                                $(`#progress-${todoId}`).text(`${avgProgress}% Selesai`);
+                            },
+                            error: function (xhr) {
+                                console.error('Gagal memperbarui progress todo:', xhr.responseText);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Gagal mengambil tasks:', xhr.responseText);
+                    }
+                });
+            }
 
 
             // Logout
@@ -540,6 +628,92 @@
                     }
                 });
             }
+            // Tampilkan Modal Edit Task
+            $(document).on('click', '.edit-task', function () {
+                const taskId = $(this).data('id');
+                const taskTitle = $(this).data('title');
+                const taskProgress = $(this).data('progress');
+
+                $('#editTaskId').val(taskId);
+                $('#editTaskTitle').val(taskTitle);
+                $('#editTaskProgress').val(taskProgress);
+
+                $('#EditTaskModal').removeClass('hidden');
+            });
+
+            // Tutup Modal Edit Task
+            $('#closeEditTaskModal').on('click', function () {
+                $('#EditTaskModal').addClass('hidden');
+            });
+
+            // Submit Edit Task
+            $('#editTaskForm').submit(function (e) {
+                e.preventDefault();
+
+                const taskId = $('#editTaskId').val();
+                const taskData = {
+                    title: $('#editTaskTitle').val(),
+                    progress: parseInt($('#editTaskProgress').val()),
+                };
+
+                $.ajax({
+                    url: `${API_URL}/tasks/${taskId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(taskData),
+                    success: function () {
+                        alert('Task berhasil diperbarui!');
+                        $('#EditTaskModal').addClass('hidden');
+                        location.reload(); // Refresh halaman setelah update
+                    },
+                    error: function () {
+                        alert('Gagal memperbarui task.');
+                    }
+                });
+            });
+            // Hapus Task
+            $(document).on('click', '.delete-task', function () {
+                const taskId = $(this).data('id');
+
+                if (confirm('Apakah Anda yakin ingin menghapus task ini?')) {
+                    $.ajax({
+                        url: `${API_URL}/tasks/${taskId}`,
+                        type: 'DELETE',
+                        success: function () {
+                            alert('Task berhasil dihapus!');
+                            location.reload(); // Refresh halaman setelah task dihapus
+                        },
+                        error: function () {
+                            alert('Gagal menghapus task.');
+                        }
+                    });
+                }
+            });
+
+
+            function loadTodos() {
+                $.ajax({
+                    url: `${API_URL}/todos`,
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response); // Debugging
+
+                        if (!response || !response.data || !Array.isArray(response.data)) {
+                            console.error("Data todos tidak valid:", response);
+                            return;
+                        }
+
+                        $('#todoList').html(''); // Kosongkan daftar sebelum diisi ulang
+                        response.data.forEach((todo) => {
+                            // Tambahkan tampilan todos (kode sebelumnya)
+                        });
+                    },
+                    error: function () {
+                        alert('Gagal memuat data todos.');
+                    }
+                });
+            }
+
 
         </script>
     </div>

@@ -1,5 +1,6 @@
-const API_LOGIN = "http://192.168.1.6:8000/api/login";
-const API_LOGOUT = "http://192.168.1.6:8000/api/logout";
+const API_BASE_URL = 'http://192.168.118.159:8000/api';
+const API_LOGIN = `${API_BASE_URL}/login`;
+const API_LOGOUT = `${API_BASE_URL}/logout`;
 
 // Cek jika sudah login
 if (
